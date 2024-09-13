@@ -95,32 +95,3 @@ Alice buys FXS to be able to vote on a proposal. She is not aware that she is re
 Short term, modify the VeFxsVotingDelegation contract to reflect the desired voting power curve and/or document whether this is intended behavior.
 
 Long term, make sure to keep public-facing documentation up to date when changes are made.
-
-## Upgradeable contract initialization calls are commented out
-
-**Description**
-
-The usage of OpenZeppelin’s upgradeable smart contract library requires that the parent contracts’ init functions are called in the child’s initialize function. However, this is commented out in the ShareableRebalancePool contract. Currently, these calls are no-ops and have no effect. However, prior to upgrading the library dependency, this code should be updated to reflect the target library’s implementation and ensure that the upgrade does not introduce a bug.
-
-**Recommendations**
-
-Short term, find an alternative solution to avoid hitting the maximum code size limit. Long term, avoid commented-out, dead code and ensure that library upgrades do not introduce new bugs.
-
-## Project dependencies contain vulnerabilities
-
-**Description**
-
-Although dependency scans did not identify a direct threat to the project under review, npm and yarn audit identified dependencies with known vulnerabilities. Due to the sensitivity of the deployment code and its environment, it is important to ensure that dependencies are not malicious. Problems with dependencies in the JavaScript community could have a significant effect on the repository under review. The output below details these issues:
-
-**Exploit Scenario** 
-
-Alice installs the dependencies of the in-scope repository on a clean machine. Unbeknownst to Alice, a dependency of the project has become malicious or exploitable. Alice subsequently uses the dependency, disclosing sensitive information to an unknown actor.
-
-**Recommendations**
-
-Short term, ensure that the Shell Protocol dependencies are up to date. Several node modules have been documented as malicious because they execute malicious code when installing dependencies to projects. Keep modules current and verify their integrity after installation.
-
-Long term, integrate automated dependency auditing into the development workflow. If a dependency cannot be updated when a vulnerability is disclosed, ensure that the code does not use and is not affected by the vulnerable functionality of the dependency.
-
-
-
