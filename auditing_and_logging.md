@@ -7,9 +7,9 @@ Events generated during contract execution aid in monitoring, baselining of beha
 Multiple critical operations do not emit events. As a result, it will be difficult to review the correct behavior of the contracts once they have been deployed.
 
 The following operations should trigger events:
-● Constructor should emit DefaultTimelockParametersSet event
-● setPriceOracle
-● setManualOverridePrice
+- Constructor should emit DefaultTimelockParametersSet event
+- setPriceOracle
+- setManualOverridePrice
 
 
 **Exploit Scenario**
@@ -66,22 +66,10 @@ Events generated during contract execution aid in monitoring, baselining of beha
 
 The following operations should trigger events:
 
-● SpoolAccessControl.grantSmartVaultOwnership
-● ActionManager.setActions
-● SmartVaultManager.registerSmartVault
-● SmartVaultManager.removeStrategy
-● SmartVaultManager.syncSmartVault
-● SmartVaultManager.reallocate
-● StrategyRegistry.registerStrategy
-● StrategyRegistry.removeStrategy
-● StrategyRegistry.doHardWork
-● StrategyRegistry.setEcosystemFee
-● StrategyRegistry.setEcosystemFeeReceiver
-● StrategyRegistry.setTreasuryFee
-● StrategyRegistry.setTreasuryFeeReceiver
-● Strategy.doHardWork
-● RewardManager.addToken
-● RewardManager.extendRewardEmission
+- SpoolAccessControl.grantSmartVaultOwnership
+- ActionManager.setActions
+- SmartVaultManager.registerSmartVault
+- SmartVaultManager.removeStrategy
 
 **Exploit Scenario**
 
@@ -105,98 +93,12 @@ Events generated during contract execution aid in monitoring, baselining behavio
 
 In addition to the above function, the following function should also emit events:
 
- - ● The setAllowedZone function in
-
-seaport/contracts/ImmutableSeaport.sol
+ - The setAllowedZone function in seaport/contracts/ImmutableSeaport.sol
 
 **Recommendations**
 
 Short term, add events for all functions that change state to aid in better monitoring and alerting.
 
 Long term, ensure that all state-changing operations are always accompanied by events. In addition, use static analysis tools such as Slither to help prevent such issues in the future.
-
-## Lack of event generation
-
-**Description**
-
-Multiple user operations do not emit events. As a result, it will be difficult to review the contracts’ behavior for correctness once they have been deployed.
-
-Events generated during contract execution aid in monitoring, baselining of behavior, and detection of suspicious activity. Without events, users and blockchain-monitoring systems cannot easily detect behavior that falls outside the baseline conditions; malfunctioning contracts and attacks could go undetected.
-
-The following operations should trigger events:
-
- - ● Splitter ○ Splitter__init
-  ○ updatePool
-  ○ updateGroupShares 
-  ○ removeUpgradeability
- 
- - ● L1Sender
-  ○ L1Sender__init
-  ○ setRewardTokenConfig 
-  ○ setDepositTokenConfig 
-  ○ updateAllowedAddresses 
-  ○ sendDepositToken 
-  ○ sendMintMessage
- - ● Distribution
-  ○ removeUpgradeability
- - ● L2MessageReceiver 
-  ○ setParams
- - ● L2TokenReceiver 
-  ○ editParams 
-  ○ withdrawToken 
-  ○ withdrawTokenId
- - ● RewardClaimer 
-  ○ RewardClaimer__init 
-  ○ setSplitter 
-  ○ setL1Sender
- - ● Token 
-  ○ updateMinter
-
-**Exploit Scenario**
-
-An attacker discovers a vulnerability in any of these contracts and modifies its execution. Because these actions generate no events, the behavior goes unnoticed until there is follow-on damage, such as financial loss.
-
-**Recommendations**
-
-Short term, add events for all operations that could contribute to a higher level of monitoring and alerting.
-
-Long term, consider using a blockchain-monitoring system to track any suspicious behavior in the contracts. The system relies on several contracts to behave as expected. A monitoring mechanism for critical events would quickly detect any compromised system components.
-
-## Missing event emission
-
-**Description**
-
-The critical operation updateOnchainSpotEncodings does not emit an event. Having an event emitted to reflect changes to this critical storage variable will allow other system/off-chain components to detect suspicious behavior in the system.
-
-Events generated during contract execution aid in monitoring, baselining of behavior, and detecting suspicious activity. Without events, users and blockchain-monitoring systems cannot easily detect behavior that falls outside the baseline conditions; malfunctioning contracts and attacks could go undetected.
-
-**Recommendations**
-
-Short term, emit an event in the updateOnchainSpotEncodings function.
-
-Long term, ensure all state-changing operations are always accompanied by events. In addition, use static analysis tools such as Slither to help prevent such issues in the future.
-
-## Lack of events for critical operations
-
-**Description**
-
-Two critical operations do not trigger events. As a result, it will be difficult to review the correct behavior of the contracts once they have been deployed.
-
-TheLiquidityPoolProxycontract’ssetImplementationfunction is called to set the implementation address of the liquidity pool and does not emit an event providing confirmation of that operation to the contract’s caller (figure 7.1).
-
-Calls to theupdateSlicesfunction in theProteuscontract do not trigger events either (figure 7.2). This is problematic because updates to theslicesarray have a significant effect on the configuration of the identity curve (TOB-SHELL-1).
-
-Without events, users and blockchain-monitoring systems cannot easily detect suspicious behavior.
-
-**Exploit Scenario**
-
-Eve, an attacker, is able to take ownership of the LiquidityPoolProxy contract. She then sets a new implementation address. Alice, a Shell Protocol team member, is unaware of the change and does not raise a security incident.
-
-**Recommendations**
-
-Short term, add events for all critical operations that result in state changes. Events aid in contract monitoring and the detection of suspicious behavior.
-
-Long term, consider using a blockchain-monitoring system to track any suspicious behavior in the contracts. The system relies on several contracts to behave as expected. A monitoring mechanism for critical events would quickly detect any compromised system components.
-
 
 
